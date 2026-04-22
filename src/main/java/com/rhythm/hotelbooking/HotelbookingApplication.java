@@ -17,9 +17,62 @@ public class HotelbookingApplication {
 	@Bean
 	CommandLineRunner initDatabase(RoomRepository roomRepository) {
 		return args -> {
-			roomRepository.save(new Room("101", 1, "LEFT", 1, "Single", 100));
-			roomRepository.save(new Room("102", 1, "LEFT", 2, "Double", 150));
-			roomRepository.save(new Room("103", 1, "RIGHT", 1, "Suite", 250));
+			if (roomRepository.count() > 0) {
+				return;
+			}
+
+			for (int f = 1; f <= 3; f++) {
+				for (int r = 1; r <= 30; r++) {
+					String roomNum = String.valueOf(f * 100 + r);
+
+					String side = (r <= 15) ? "LEFT" : "RIGHT";
+
+					String type;
+					if (r % 3 == 0) {
+						type = "Suite";
+					} else if (r % 2 == 0) {
+						type = "Double";
+					} else {
+						type = "Single";
+					}
+
+					String status;
+					if (r % 5 == 0) {
+						status = "OCCUPIED";
+					} else if (r % 4 == 0) {
+						status = "CLEANING";
+					} else {
+						status = "AVAILABLE";
+					}
+
+					int x;
+					if (r <= 15) {
+						x = ((r - 1) % 10) + 1;
+					} else {
+						x = ((r - 16) % 10) + 1;
+					}
+
+					int y;
+					if (r <= 15) {
+						y = ((r - 1) / 10) + 1;
+					} else {
+						y = ((r - 16) / 10) + 4;
+					}
+
+					Room room = new Room();
+					room.setFloor(f);
+					room.setPosition(r);
+					room.setPricePerNight(100 + (r * 5));
+					room.setRoomNumber(roomNum);
+					room.setSide(side);
+					room.setType(type);
+					room.setStatus(status);
+					room.setX(x);
+					room.setY(y);
+
+					roomRepository.save(room);
+				}
+			}
 		};
 	}
 }
