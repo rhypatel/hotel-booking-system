@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Recommendation Result</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .top-nav {
+      background: #1f3c58;
+      padding: 15px;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 14px;
+      background: white;
+      color: #1f3c58;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .top-nav a:hover {
+      background: #dfe6ec;
+    }
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      color: #1f3c58;
+    }
+
+    .recommendation-badge {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #1f3c58;
+      color: white;
+      border-radius: 10px;
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .recommended-image {
+      width: 300px;
+      border-radius: 12px;
+      margin: 20px 0;
+      object-fit: cover;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 25px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background: #1f3c58;
+      color: white;
+    }
+
+    .button-link, .book-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 15px;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .button-link {
+      background: #3498db;
+      margin-right: 10px;
+    }
+
+    .button-link:hover {
+      background: #2980b9;
+    }
+
+    .book-btn {
+      background: #27ae60;
+      margin-top: 0;
+    }
+
+    .book-btn:hover {
+      background: #1e8449;
+    }
+
+    .empty-message {
+      color: #c0392b;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="/browse">Browse Rooms</a>
+  <a href="/guest-map">View Floor Map</a>
+  <a href="/recommend">Get Recommendation</a>
+  <a href="/book-room">Book a Room</a>
+  <a href="/login">Admin Login</a>
+</div>
+
+<div class="wrapper">
+  <h2>Recommended Room Type</h2>
+
+  <div class="recommendation-badge" th:text="${recommendation}"></div>
+
+  <p style="color:#666; margin-top:5px;">
+    Based on your preferences, we recommend this room type.
+  </p>
+
+  <img th:if="${recommendation == 'Single'}" src="/images/single-room.jpg" alt="Single Room" class="recommended-image">
+  <img th:if="${recommendation == 'Double'}" src="/images/double-room.jpg" alt="Double Room" class="recommended-image">
+  <img th:if="${recommendation == 'Suite'}" src="/images/suite-room.jpg" alt="Suite Room" class="recommended-image">
+
+  <h3>Available Matching Rooms</h3>
+
+  <table th:if="${!matchingRooms.isEmpty()}">
+    <thead>
+    <tr>
+      <th>Room Number</th>
+      <th>Floor</th>
+      <th>Type</th>
+      <th>Price</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="room : ${matchingRooms}">
+      <td th:text="${room.roomNumber}"></td>
+      <td th:text="${room.floor}"></td>
+      <td th:text="${room.type}"></td>
+      <td>$<span th:text="${room.pricePerNight}"></span></td>
+      <td th:text="${room.status}"></td>
+      <td>
+        <a th:href="@{/book-room(selectedRoom=${room.roomNumber})}" class="book-btn">Book This Room</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p th:if="${matchingRooms.isEmpty()}" class="empty-message">
+    No currently available rooms match this recommendation.
+  </p>
+
+  <a href="/recommend" class="button-link">Try Again</a>
+  <a href="/browse" class="button-link">Back to Browse</a>
+</div>
+
+</body>
+</html>

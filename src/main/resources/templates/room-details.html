@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Room Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+    }
+
+    .top-nav {
+      background: #1f3c58;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      margin: 0 8px;
+      padding: 10px 14px;
+      background: white;
+      color: #1f3c58;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .top-nav a:hover {
+      background: #dfe6ec;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px 20px 20px;
+    }
+
+    .hero h1 {
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #666;
+      margin-top: 0;
+    }
+
+    .content-box {
+      max-width: 1100px;
+      margin: 0 auto 30px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .card p {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    h2 {
+      margin-bottom: 18px;
+    }
+
+    .table-box {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background: #1f3c58;
+      color: white;
+    }
+
+    .empty-message {
+      font-weight: bold;
+      color: #c0392b;
+      margin-top: 15px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #1f3c58;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="/admin/dashboard">Dashboard</a>
+  <a href="/rooms">Rooms</a>
+  <a href="/floor">Floor Layout</a>
+  <a href="/map">Floor Map</a>
+  <a href="/bookings">Bookings</a>
+  <a href="/analytics">Analytics</a>
+  <a href="/browse">Guest Site</a>
+  <a href="/logout">Logout</a>
+</div>
+
+<div class="hero">
+  <h1>Room Details</h1>
+  <p>View room information and its associated booking history.</p>
+</div>
+
+<div class="content-box">
+
+  <div class="card">
+    <p><strong>Room Number:</strong> <span th:text="${room.roomNumber}"></span></p>
+    <p><strong>Floor:</strong> <span th:text="${room.floor}"></span></p>
+    <p><strong>Type:</strong> <span th:text="${room.type}"></span></p>
+    <p><strong>Price:</strong> $<span th:text="${room.pricePerNight}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${room.status}"></span></p>
+    <p><strong>Side:</strong> <span th:text="${room.side}"></span></p>
+    <p><strong>Position:</strong> <span th:text="${room.position}"></span></p>
+    <p><strong>X Coordinate:</strong> <span th:text="${room.x}"></span></p>
+    <p><strong>Y Coordinate:</strong> <span th:text="${room.y}"></span></p>
+  </div>
+
+  <h2>Booking History</h2>
+
+  <div class="table-box">
+    <table th:if="${!bookings.isEmpty()}">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Guest Name</th>
+        <th>Check-In Date</th>
+        <th>Check-Out Date</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="booking : ${bookings}">
+        <td th:text="${booking.id}"></td>
+        <td th:text="${booking.guestName}"></td>
+        <td th:text="${booking.checkInDate}"></td>
+        <td th:text="${booking.checkOutDate}"></td>
+        <td th:text="${booking.status}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <p th:if="${bookings.isEmpty()}" class="empty-message">
+      No booking history found for this room.
+    </p>
+  </div>
+
+  <a href="/rooms" class="back-link">Back to Room Management</a>
+
+</div>
+
+</body>
+</html>

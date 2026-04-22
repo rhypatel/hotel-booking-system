@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Booking Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .top-nav {
+            background: #1f3c58;
+            padding: 15px;
+        }
+
+        .top-nav a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 14px;
+            background: white;
+            color: #1f3c58;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .top-nav a:hover {
+            background: #dfe6ec;
+        }
+
+        .wrapper {
+            max-width: 700px;
+            margin: 50px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #1f3c58;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            color: #1e8449;
+            font-weight: bold;
+            margin-bottom: 25px;
+            font-size: 18px;
+        }
+
+        .details {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .details p {
+            font-size: 16px;
+            margin: 12px 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #fcf3cf;
+            color: #b7950b;
+            font-weight: bold;
+        }
+
+        .button-link {
+            display: inline-block;
+            margin-top: 25px;
+            margin-right: 10px;
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .button-link:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">
+    <a href="/browse">Browse Rooms</a>
+    <a href="/guest-map">View Floor Map</a>
+    <a href="/recommend">Get Recommendation</a>
+    <a href="/book-room">Book a Room</a>
+    <a href="/login">Admin Login</a>
+</div>
+
+<div class="wrapper">
+    <h1>Booking Request Submitted</h1>
+    <p class="success-message">Your booking request has been submitted successfully.</p>
+
+    <div class="details">
+        <p><strong>Guest Name:</strong> <span th:text="${booking.guestName}"></span></p>
+        <p><strong>Room Number:</strong> <span th:text="${booking.roomNumber}"></span></p>
+        <p><strong>Check-In Date:</strong> <span th:text="${booking.checkInDate}"></span></p>
+        <p><strong>Check-Out Date:</strong> <span th:text="${booking.checkOutDate}"></span></p>
+        <p><strong>Status:</strong> <span class="status-badge" th:text="${booking.status}"></span></p>
+    </div>
+
+    <a href="/browse" class="button-link">Back to Browse</a>
+    <a href="/book-room" class="button-link">Make Another Booking</a>
+</div>
+
+</body>
+</html>

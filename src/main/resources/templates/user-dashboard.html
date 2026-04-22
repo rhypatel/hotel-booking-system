@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 40px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 300px;
+    }
+
+    a {
+      display: block;
+      padding: 12px;
+      background: #27ae60;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    a:hover {
+      background: #1e8449;
+    }
+
+    .logout {
+      background: #e74c3c;
+    }
+
+    .logout:hover {
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+<h1>User Dashboard</h1>
+
+<div class="links">
+  <a href="/browse">Browse Rooms</a>
+  <a href="/recommend">Get Room Recommendation</a>
+  <a href="/book-room">Book a Room</a>
+  <a href="/logout" class="logout">Logout</a>
+</div>
+
+</body>
+</html>

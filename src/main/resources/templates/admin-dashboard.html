@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+        }
+
+        .top-nav {
+            background: #1f3c58;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .top-nav a {
+            display: inline-block;
+            margin: 0 8px;
+            padding: 10px 14px;
+            background: white;
+            color: #1f3c58;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .top-nav a:hover {
+            background: #dfe6ec;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 40px 20px 20px 20px;
+        }
+
+        .hero h1 {
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #666;
+            margin-top: 0;
+        }
+
+        .dashboard-grid {
+            max-width: 1100px;
+            margin: 0 auto 50px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 22px;
+            padding: 0 20px;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 28px 20px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        .dashboard-card h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .dashboard-card p {
+            color: #666;
+            margin-bottom: 18px;
+            min-height: 40px;
+        }
+
+        .dashboard-card a {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #34495e;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .dashboard-card a:hover {
+            background: #2c3e50;
+        }
+
+        .logout-btn {
+            background: #e74c3c !important;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/rooms">Rooms</a>
+    <a href="/floor">Floor Layout</a>
+    <a href="/map">Floor Map</a>
+    <a href="/bookings">Bookings</a>
+    <a href="/analytics">Analytics</a>
+    <a href="/browse">Guest Site</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="hero">
+    <h1>Admin Dashboard</h1>
+    <p>Manage rooms, monitor bookings, review analytics, and control hotel operations.</p>
+</div>
+
+<div class="dashboard-grid">
+
+    <div class="dashboard-card">
+        <h3>Manage Rooms</h3>
+        <p>Add, update, review, and manage room records and statuses.</p>
+        <a href="/rooms">Open</a>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Floor Layout</h3>
+        <p>View the simplified room arrangement across hotel floors.</p>
+        <a href="/floor">Open</a>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Geometry Floor Map</h3>
+        <p>Inspect the multi-floor room map with filters, zoom, and room links.</p>
+        <a href="/map">Open</a>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Bookings</h3>
+        <p>Review booking requests, approve or reject them, and complete stays.</p>
+        <a href="/bookings">Open</a>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Analytics</h3>
+        <p>View room availability and booking summaries from one dashboard.</p>
+        <a href="/analytics">Open</a>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Guest Site</h3>
+        <p>Return to the public hotel booking pages and guest experience flow.</p>
+        <a href="/browse">Open</a>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Logout</h3>
+        <p>Sign out of the admin area and return to the guest-facing site.</p>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Reset Demo Data</h3>
+        <p>Clear old room and booking data, then reload clean demo data for testing.</p>
+
+        <form action="/admin/reset-demo" method="post">
+            <button type="submit" class="logout-btn" style="border:none; cursor:pointer; padding:10px 16px; border-radius:8px; color:white; font-weight:bold;">
+                Reset Data
+            </button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

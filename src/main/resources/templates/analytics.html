@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Analytics Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .top-nav {
+      background: #1f3c58;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      margin: 0 8px;
+      padding: 10px 14px;
+      background: white;
+      color: #1f3c58;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .top-nav a:hover {
+      background: #dfe6ec;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px 20px 20px;
+    }
+
+    .hero h1 {
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #666;
+      margin-top: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+      max-width: 1200px;
+      margin: 0 auto 50px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 28px 20px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #2c3e50;
+    }
+
+    .card p {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 0;
+      color: #1f3c58;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="/admin/dashboard">Dashboard</a>
+  <a href="/rooms">Rooms</a>
+  <a href="/floor">Floor Layout</a>
+  <a href="/map">Floor Map</a>
+  <a href="/bookings">Bookings</a>
+  <a href="/analytics">Analytics</a>
+  <a href="/browse">Guest Site</a>
+  <a href="/logout">Logout</a>
+</div>
+
+<div class="hero">
+  <h1>Analytics Dashboard</h1>
+  <p>View a quick summary of room availability and booking activity across the hotel.</p>
+</div>
+
+<div class="grid">
+
+  <div class="card">
+    <h2>Total Rooms</h2>
+    <p th:text="${totalRooms}"></p>
+  </div>
+
+  <div class="card">
+    <h2>Available Rooms</h2>
+    <p th:text="${availableRooms}"></p>
+  </div>
+
+  <div class="card">
+    <h2>Occupied Rooms</h2>
+    <p th:text="${occupiedRooms}"></p>
+  </div>
+
+  <div class="card">
+    <h2>Cleaning Rooms</h2>
+    <p th:text="${cleaningRooms}"></p>
+  </div>
+
+  <div class="card">
+    <h2>Pending Bookings</h2>
+    <p th:text="${pendingBookings}"></p>
+  </div>
+
+  <div class="card">
+    <h2>Confirmed Bookings</h2>
+    <p th:text="${confirmedBookings}"></p>
+  </div>
+
+  <div class="card">
+    <h2>Completed Bookings</h2>
+    <p th:text="${completedBookings}"></p>
+  </div>
+
+  <div class="card">
+    <h2>Rejected Bookings</h2>
+    <p th:text="${rejectedBookings}"></p>
+  </div>
+
+</div>
+
+</body>
+</html>

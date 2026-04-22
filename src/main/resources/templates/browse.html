@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Browse Rooms</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+    }
+
+    .top-nav {
+      background: #1f3c58;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 14px;
+      background: white;
+      color: #1f3c58;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .top-nav a:hover {
+      background: #dfe6ec;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px 20px 20px;
+    }
+
+    .hero h1 {
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #666;
+      margin-top: 0;
+    }
+
+    .filter-box {
+      max-width: 1100px;
+      margin: 0 auto 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    select, button {
+      margin: 8px 12px 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #1f3c58;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #163147;
+    }
+
+    .room-grid {
+      max-width: 1200px;
+      margin: 0 auto 40px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      padding: 0 20px;
+    }
+
+    .room-card {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .room-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .room-info {
+      padding: 18px;
+      text-align: left;
+    }
+
+    .room-info h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .room-info p {
+      margin: 6px 0;
+      color: #555;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .available {
+      background: #d4efdf;
+      color: #1e8449;
+    }
+
+    .occupied {
+      background: #fadbd8;
+      color: #c0392b;
+    }
+
+    .cleaning {
+      background: #fcf3cf;
+      color: #b7950b;
+    }
+
+    .book-link {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 14px;
+      background: #27ae60;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .book-link:hover {
+      background: #1e8449;
+    }
+
+    .unavailable-label {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 14px;
+      background: #bdc3c7;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .empty-message {
+      text-align: center;
+      font-weight: bold;
+      color: #c0392b;
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="/browse">Browse Rooms</a>
+  <a href="/guest-map">View Floor Map</a>
+  <a href="/recommend">Get Recommendation</a>
+  <a href="/book-room">Book a Room</a>
+  <a href="/login">Admin Login</a>
+</div>
+
+<div class="hero">
+  <h1>Find Your Perfect Stay</h1>
+  <p>Browse available rooms by type, floor, price, and availability.</p>
+</div>
+
+<div class="filter-box">
+  <form action="/browse" method="get">
+
+    <label>Type:</label>
+    <select name="type">
+      <option value="ALL" th:selected="${selectedType == 'ALL'}">All</option>
+      <option value="Single" th:selected="${selectedType == 'Single'}">Single</option>
+      <option value="Double" th:selected="${selectedType == 'Double'}">Double</option>
+      <option value="Suite" th:selected="${selectedType == 'Suite'}">Suite</option>
+    </select>
+
+    <label>Floor:</label>
+    <select name="floor">
+      <option value="ALL" th:selected="${selectedFloor == 'ALL'}">All</option>
+      <option value="1" th:selected="${selectedFloor == '1'}">1</option>
+      <option value="2" th:selected="${selectedFloor == '2'}">2</option>
+      <option value="3" th:selected="${selectedFloor == '3'}">3</option>
+    </select>
+
+    <label>Availability:</label>
+    <select name="status">
+      <option value="ALL" th:selected="${selectedStatus == 'ALL'}">All</option>
+      <option value="AVAILABLE" th:selected="${selectedStatus == 'AVAILABLE'}">Available</option>
+      <option value="OCCUPIED" th:selected="${selectedStatus == 'OCCUPIED'}">Occupied</option>
+      <option value="CLEANING" th:selected="${selectedStatus == 'CLEANING'}">Cleaning</option>
+    </select>
+
+    <label>Sort By:</label>
+    <select name="sort">
+      <option value="NONE" th:selected="${selectedSort == 'NONE'}">None</option>
+      <option value="PRICE_ASC" th:selected="${selectedSort == 'PRICE_ASC'}">Price: Low to High</option>
+      <option value="PRICE_DESC" th:selected="${selectedSort == 'PRICE_DESC'}">Price: High to Low</option>
+      <option value="FLOOR_ASC" th:selected="${selectedSort == 'FLOOR_ASC'}">Floor: Low to High</option>
+      <option value="TYPE_ASC" th:selected="${selectedSort == 'TYPE_ASC'}">Room Type: A to Z</option>
+    </select>
+
+    <button type="submit">Apply Filters</button>
+  </form>
+</div>
+
+<div class="room-grid">
+  <div class="room-card" th:each="room : ${rooms}">
+
+    <img th:if="${room.type == 'Single'}" src="/images/single-room.jpg" alt="Single Room">
+    <img th:if="${room.type == 'Double'}" src="/images/double-room.jpg" alt="Double Room">
+    <img th:if="${room.type == 'Suite'}" src="/images/suite-room.jpg" alt="Suite Room">
+
+    <div class="room-info">
+      <h3>Room <span th:text="${room.roomNumber}"></span></h3>
+      <p><strong>Type:</strong> <span th:text="${room.type}"></span></p>
+      <p><strong>Floor:</strong> <span th:text="${room.floor}"></span></p>
+      <p><strong>Price:</strong> $<span th:text="${room.pricePerNight}"></span> / night</p>
+
+      <p th:if="${room.type == 'Single'}">Ideal for solo travelers looking for a cozy stay.</p>
+      <p th:if="${room.type == 'Double'}">A great choice for couples or small groups.</p>
+      <p th:if="${room.type == 'Suite'}">Spacious and premium comfort for a luxury stay.</p>
+
+      <span th:if="${room.status == 'AVAILABLE'}" class="status available">Available</span>
+      <span th:if="${room.status == 'OCCUPIED'}" class="status occupied">Occupied</span>
+      <span th:if="${room.status == 'CLEANING'}" class="status cleaning">Cleaning</span>
+
+      <div th:if="${room.status == 'AVAILABLE'}">
+        <a th:href="@{/book-room(selectedRoom=${room.roomNumber})}" class="book-link">Book Now</a>
+      </div>
+
+      <div th:if="${room.status != 'AVAILABLE'}">
+        <span class="unavailable-label">Currently Unavailable</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p th:if="${rooms.isEmpty()}" class="empty-message">
+  No rooms match the selected filters.
+</p>
+
+</body>
+</html>

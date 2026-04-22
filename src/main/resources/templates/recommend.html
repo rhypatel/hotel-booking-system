@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Room Recommendation</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+    }
+
+    .top-nav {
+      background: #1f3c58;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 14px;
+      background: white;
+      color: #1f3c58;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .top-nav a:hover {
+      background: #dfe6ec;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px 20px 20px;
+    }
+
+    .hero h1 {
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #666;
+      margin-top: 0;
+    }
+
+    .box {
+      max-width: 600px;
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      margin: 0 auto 50px auto;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #1e8449;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="top-nav">
+  <a href="/browse">Browse Rooms</a>
+  <a href="/guest-map">View Floor Map</a>
+  <a href="/recommend">Get Recommendation</a>
+  <a href="/book-room">Book a Room</a>
+  <a href="/login">Admin Login</a>
+</div>
+
+<div class="hero">
+  <h1>Personalized Room Recommendation</h1>
+  <p>Answer a few quick questions and we’ll suggest the best room type for your stay.</p>
+</div>
+
+<div class="box">
+
+  <form action="/recommend" method="post">
+
+    <label>Number of Guests</label>
+    <input type="number" name="guests" min="1" required>
+
+    <label>Budget ($ per night)</label>
+    <input type="number" name="budget" min="1" required>
+
+    <label>Bed Preference</label>
+    <select name="bedPreference">
+      <option value="1">1 Bed</option>
+      <option value="2">2 Beds</option>
+    </select>
+
+    <button type="submit">Get Recommendation</button>
+
+  </form>
+
+</div>
+
+</body>
+
+</html>

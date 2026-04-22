@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Booking Requests</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+    }
+
+    .top-nav {
+      background: #1f3c58;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      margin: 0 8px;
+      padding: 10px 14px;
+      background: white;
+      color: #1f3c58;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .top-nav a:hover {
+      background: #dfe6ec;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px 20px 20px;
+    }
+
+    .hero h1 {
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #666;
+      margin-top: 0;
+    }
+
+    .filter-box {
+      max-width: 1200px;
+      margin: 0 auto 25px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    form {
+      margin: 0;
+    }
+
+    label {
+      margin-right: 8px;
+      font-weight: bold;
+    }
+
+    input, select {
+      margin-right: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .filter-btn,
+    .approve-btn,
+    .reject-btn,
+    .complete-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .filter-btn {
+      background: #34495e;
+    }
+
+    .filter-btn:hover {
+      background: #2c3e50;
+    }
+
+    .approve-btn {
+      background: #27ae60;
+    }
+
+    .approve-btn:hover {
+      background: #1e8449;
+    }
+
+    .reject-btn {
+      background: #e74c3c;
+    }
+
+    .reject-btn:hover {
+      background: #c0392b;
+    }
+
+    .complete-btn {
+      background: #34495e;
+    }
+
+    .complete-btn:hover {
+      background: #2c3e50;
+    }
+
+    .table-box {
+      max-width: 1200px;
+      margin: 0 auto 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background: #1f3c58;
+      color: white;
+    }
+
+    .empty-message {
+      text-align: center;
+      font-weight: bold;
+      color: #c0392b;
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="/admin/dashboard">Dashboard</a>
+  <a href="/rooms">Rooms</a>
+  <a href="/floor">Floor Layout</a>
+  <a href="/map">Floor Map</a>
+  <a href="/bookings">Bookings</a>
+  <a href="/analytics">Analytics</a>
+  <a href="/browse">Guest Site</a>
+  <a href="/logout">Logout</a>
+</div>
+
+<div class="hero">
+  <h1>Booking Requests</h1>
+  <p>Review, approve, reject, and complete hotel booking requests.</p>
+</div>
+
+<div th:if="${param.success}" style="max-width:1200px; margin:0 auto 20px auto; padding:12px 16px; background:#d4efdf; color:#1e8449; border-radius:8px; font-weight:bold;">
+  <span th:text="${param.success}"></span>
+</div>
+
+<div th:if="${param.error}" style="max-width:1200px; margin:0 auto 20px auto; padding:12px 16px; background:#fadbd8; color:#c0392b; border-radius:8px; font-weight:bold;">
+  <span th:text="${param.error}"></span>
+</div>
+
+<div class="filter-box">
+  <form action="/bookings" method="get">
+
+    <label>Guest Name:</label>
+    <input type="text" name="guestName" th:value="${selectedGuestName}" placeholder="Search by guest name">
+
+    <label>Room Number:</label>
+    <input type="text" name="roomNumber" th:value="${selectedRoomNumber}" placeholder="Search by room number">
+
+    <label>Status:</label>
+    <select name="status">
+      <option value="ALL" th:selected="${selectedStatus == 'ALL'}">All</option>
+      <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
+      <option value="CONFIRMED" th:selected="${selectedStatus == 'CONFIRMED'}">Confirmed</option>
+      <option value="COMPLETED" th:selected="${selectedStatus == 'COMPLETED'}">Completed</option>
+      <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
+    </select>
+
+    <button type="submit" class="filter-btn">Apply Filters</button>
+
+  </form>
+</div>
+
+<div class="table-box">
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Guest Name</th>
+      <th>Room Number</th>
+      <th>Check-In</th>
+      <th>Check-Out</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="booking : ${bookings}">
+      <td th:text="${booking.id}"></td>
+      <td th:text="${booking.guestName}"></td>
+      <td th:text="${booking.roomNumber}"></td>
+      <td th:text="${booking.checkInDate}"></td>
+      <td th:text="${booking.checkOutDate}"></td>
+      <td th:text="${booking.status}"></td>
+
+      <td>
+        <form th:if="${booking.status == 'PENDING'}"
+              th:action="@{/bookings/approve/{id}(id=${booking.id})}"
+              method="post" style="display:inline;">
+          <button type="submit" class="approve-btn">Approve</button>
+        </form>
+
+        <form th:if="${booking.status == 'PENDING'}"
+              th:action="@{/bookings/reject/{id}(id=${booking.id})}"
+              method="post" style="display:inline;">
+          <button type="submit" class="reject-btn">Reject</button>
+        </form>
+
+        <form th:if="${booking.status == 'CONFIRMED'}"
+              th:action="@{/bookings/complete/{id}(id=${booking.id})}"
+              method="post" style="display:inline;">
+          <button type="submit" class="complete-btn">Complete Stay</button>
+        </form>
+
+        <span th:if="${booking.status == 'REJECTED' or booking.status == 'COMPLETED'}">
+          No actions
+        </span>
+      </td>
+    </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<p th:if="${bookings.isEmpty()}" class="empty-message">
+  No bookings match the selected filters.
+</p>
+
+</body>
+</html>
