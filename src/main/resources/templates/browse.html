@@ -14,23 +14,30 @@
 
     .top-nav {
       background: #1f3c58;
-      padding: 15px;
+      padding: 15px 20px;
       text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
     }
 
     .top-nav a {
       display: inline-block;
-      margin: 0 10px;
       padding: 10px 14px;
       background: white;
       color: #1f3c58;
       text-decoration: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: bold;
+      transition: all 0.22s ease;
+      margin: 0;
     }
 
     .top-nav a:hover {
       background: #dfe6ec;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
     }
 
     .hero {
@@ -51,9 +58,9 @@
       max-width: 1100px;
       margin: 0 auto 30px auto;
       background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.06);
       text-align: center;
     }
 
@@ -75,10 +82,13 @@
       border: none;
       cursor: pointer;
       font-weight: bold;
+      transition: all 0.2s ease;
     }
 
     button:hover {
       background: #163147;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.12);
     }
 
     .room-grid {
@@ -92,11 +102,17 @@
 
     .room-card {
       background: white;
-      border-radius: 14px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
       display: flex;
       flex-direction: column;
+      transition: all 0.22s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 34px rgba(0,0,0,0.12);
     }
 
     .room-card img {
@@ -151,12 +167,15 @@
       background: #27ae60;
       color: white;
       text-decoration: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: bold;
+      transition: all 0.2s ease;
     }
 
     .book-link:hover {
       background: #1e8449;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.12);
     }
 
     .unavailable-label {
@@ -175,15 +194,94 @@
       color: #c0392b;
       margin: 30px 0;
     }
+
+    .amenities-section {
+      max-width: 1200px;
+      margin: 0 auto 40px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .amenities-section h2 {
+      margin-bottom: 10px;
+      color: #1f3c58;
+    }
+
+    .amenities-subtitle {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .amenities-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 1400px) {
+      .amenities-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .amenities-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .amenities-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .amenity-card {
+      background: white;
+      padding: 18px;
+      border-radius: 16px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .amenity-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 26px rgba(0,0,0,0.10);
+    }
+
+    .amenity-card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #1f3c58;
+      font-size: 18px;
+    }
+
+    .amenity-card p {
+      margin: 0;
+      color: #555;
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
   </style>
 </head>
 <body>
 
 <div class="top-nav">
   <a href="/browse">Browse Rooms</a>
+  <a href="/photos">Photos</a>
   <a href="/guest-map">View Floor Map</a>
   <a href="/recommend">Get Recommendation</a>
   <a href="/book-room">Book a Room</a>
+  <a href="/manage-booking">Manage Reservation</a>
+
+  <a th:if="${session.guestUserEmail != null}" href="/guest-dashboard">Guest Dashboard</a>
+  <a th:if="${session.guestUserEmail != null}" href="/guest-logout">Logout</a>
+
+  <a th:if="${session.guestUserEmail == null}" href="/guest-login">Guest Login</a>
+  <a th:if="${session.guestUserEmail == null}" href="/guest-signup">Guest Sign Up</a>
+
   <a href="/login">Admin Login</a>
 </div>
 
@@ -230,6 +328,43 @@
 
     <button type="submit">Apply Filters</button>
   </form>
+</div>
+
+<div class="amenities-section">
+  <h2>Hotel Amenities</h2>
+  <p class="amenities-subtitle">Enjoy comfort and convenience during your stay.</p>
+
+  <div class="amenities-grid">
+    <div class="amenity-card">
+      <h3>Free Wi-Fi</h3>
+      <p>High-speed internet access available throughout the hotel.</p>
+    </div>
+
+    <div class="amenity-card">
+      <h3>Complimentary Breakfast</h3>
+      <p>Start your day with a fresh and convenient breakfast option.</p>
+    </div>
+
+    <div class="amenity-card">
+      <h3>Fitness Center</h3>
+      <p>Stay active with access to our on-site workout space.</p>
+    </div>
+
+    <div class="amenity-card">
+      <h3>Swimming Pool</h3>
+      <p>Relax and unwind with access to the hotel pool area.</p>
+    </div>
+
+    <div class="amenity-card">
+      <h3>Free Parking</h3>
+      <p>Convenient parking is available for hotel guests.</p>
+    </div>
+
+    <div class="amenity-card">
+      <h3>24/7 Front Desk</h3>
+      <p>Our front desk is available any time you need assistance.</p>
+    </div>
+  </div>
 </div>
 
 <div class="room-grid">

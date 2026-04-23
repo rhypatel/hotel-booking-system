@@ -11,6 +11,10 @@ public class Booking {
     private Long id;
 
     private String guestName;
+    private String email;
+    private String cardholderName;
+    private String cardLastFour;
+    private String paymentStatus;
     private String roomNumber;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
@@ -29,6 +33,38 @@ public class Booking {
 
     public void setGuestName(String guestName) {
         this.guestName = guestName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCardholderName() {
+        return cardholderName;
+    }
+
+    public void setCardholderName(String cardholderName) {
+        this.cardholderName = cardholderName;
+    }
+
+    public String getCardLastFour() {
+        return cardLastFour;
+    }
+
+    public void setCardLastFour(String cardLastFour) {
+        this.cardLastFour = cardLastFour;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public String getRoomNumber() {

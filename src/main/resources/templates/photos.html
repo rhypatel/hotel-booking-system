@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Hotel Photos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      overflow-x: hidden;
+    }
+
+    .top-nav {
+      background: #1f3c58;
+      padding: 15px 20px;
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      padding: 10px 14px;
+      background: white;
+      color: #1f3c58;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: all 0.22s ease;
+      margin: 0;
+    }
+
+    .top-nav a:hover {
+      background: #dfe6ec;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 45px 20px 20px 20px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+      color: #1f3c58;
+    }
+
+    .hero p {
+      color: #666;
+      font-size: 18px;
+      margin-top: 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 28px;
+      margin: 40px 0 18px 0;
+      color: #1f3c58;
+    }
+
+    .gallery-section {
+      margin-bottom: 45px;
+    }
+
+    .scroll-wrapper {
+      overflow: hidden;
+      width: 100%;
+      position: relative;
+    }
+
+    .scroll-track {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+      animation: scrollLeft 35s linear infinite;
+      padding: 10px 0 20px 0;
+    }
+
+    .scroll-track.reverse {
+      animation: scrollRight 35s linear infinite;
+    }
+
+    .scroll-track:hover {
+      animation-play-state: paused;
+    }
+
+    .photo-card {
+      flex: 0 0 auto;
+      width: 320px;
+      height: 220px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+      background: white;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .photo-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 18px 34px rgba(0,0,0,0.16);
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+
+    .photo-card:hover img {
+      transform: scale(1.08);
+    }
+
+    .photo-label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
+      color: white;
+      font-weight: bold;
+      font-size: 15px;
+      text-align: left;
+    }
+
+    .highlight-grid {
+      max-width: 1200px;
+      margin: 0 auto 50px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .highlight-card {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+      transition: all 0.25s ease;
+    }
+
+    .highlight-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 34px rgba(0,0,0,0.14);
+    }
+
+    .highlight-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .highlight-info {
+      padding: 18px;
+    }
+
+    .highlight-info h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #1f3c58;
+    }
+
+    .highlight-info p {
+      margin: 0;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 85vh;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 22px;
+      right: 30px;
+      font-size: 36px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    @keyframes scrollLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes scrollRight {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+
+    @media (max-width: 700px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .photo-card {
+        width: 260px;
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="/browse">Browse Rooms</a>
+  <a href="/photos">Photos</a>
+  <a href="/guest-map">View Floor Map</a>
+  <a href="/recommend">Get Recommendation</a>
+  <a href="/book-room">Book a Room</a>
+  <a href="/manage-booking">Manage Reservation</a>
+
+  <a th:if="${session.guestUserEmail != null}" href="/guest-dashboard">Guest Dashboard</a>
+  <a th:if="${session.guestUserEmail != null}" href="/guest-logout">Logout</a>
+
+  <a th:if="${session.guestUserEmail == null}" href="/guest-login">Guest Login</a>
+  <a th:if="${session.guestUserEmail == null}" href="/guest-signup">Guest Sign Up</a>
+
+  <a href="/login">Admin Login</a>
+</div>
+
+<div class="hero">
+  <h1>Explore Our Hotel</h1>
+  <p>Take a closer look at our rooms, amenities, and guest experience.</p>
+</div>
+
+<h2 class="section-title">Hotel Highlights</h2>
+
+<div class="highlight-grid">
+  <div class="highlight-card">
+    <img src="/images/hotel.jpg" alt="Hotel Exterior" onclick="openModal(this.src)">
+    <div class="highlight-info">
+      <h3>Welcome Experience</h3>
+      <p>A modern and inviting hotel atmosphere designed for comfort from arrival to checkout.</p>
+    </div>
+  </div>
+
+  <div class="highlight-card">
+    <img src="/images/hotel-frontdesk.jpg" alt="Front Desk" onclick="openModal(this.src)">
+    <div class="highlight-info">
+      <h3>Front Desk Service</h3>
+      <p>Professional guest support and assistance available whenever you need help.</p>
+    </div>
+  </div>
+
+  <div class="highlight-card">
+    <img src="/images/hotel-breakfast.jpg" alt="Breakfast" onclick="openModal(this.src)">
+    <div class="highlight-info">
+      <h3>Breakfast & Dining</h3>
+      <p>Enjoy a fresh and convenient breakfast experience to start your day right.</p>
+    </div>
+  </div>
+</div>
+
+<div class="gallery-section">
+  <h2 class="section-title">Room Collection</h2>
+  <div class="scroll-wrapper">
+    <div class="scroll-track">
+      <div class="photo-card" onclick="openModal('/images/single-room.jpg')">
+        <img src="/images/single-room.jpg" alt="Single Room">
+        <div class="photo-label">Single Room</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/double-room.jpg')">
+        <img src="/images/double-room.jpg" alt="Double Room">
+        <div class="photo-label">Double Room</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/suite-room.jpg')">
+        <img src="/images/suite-room.jpg" alt="Suite Room">
+        <div class="photo-label">Suite Room</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-1.jpg')">
+        <img src="/images/hotel-1.jpg" alt="Guest Room">
+        <div class="photo-label">Premium Interior</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-2.jpg')">
+        <img src="/images/hotel-2.jpg" alt="Hotel Room">
+        <div class="photo-label">Comfort Stay</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/single-room.jpg')">
+        <img src="/images/single-room.jpg" alt="Single Room">
+        <div class="photo-label">Single Room</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/double-room.jpg')">
+        <img src="/images/double-room.jpg" alt="Double Room">
+        <div class="photo-label">Double Room</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/suite-room.jpg')">
+        <img src="/images/suite-room.jpg" alt="Suite Room">
+        <div class="photo-label">Suite Room</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-1.jpg')">
+        <img src="/images/hotel-1.jpg" alt="Guest Room">
+        <div class="photo-label">Premium Interior</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-2.jpg')">
+        <img src="/images/hotel-2.jpg" alt="Hotel Room">
+        <div class="photo-label">Comfort Stay</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gallery-section">
+  <h2 class="section-title">Amenities & Experience</h2>
+  <div class="scroll-wrapper">
+    <div class="scroll-track reverse">
+      <div class="photo-card" onclick="openModal('/images/hotel-pool.jpg')">
+        <img src="/images/hotel-pool.jpg" alt="Pool">
+        <div class="photo-label">Swimming Pool</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-gym.jpg')">
+        <img src="/images/hotel-gym.jpg" alt="Fitness Center">
+        <div class="photo-label">Fitness Center</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-wifi.jpg')">
+        <img src="/images/hotel-wifi.jpg" alt="Wi-Fi">
+        <div class="photo-label">Free Wi-Fi</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-3.jpg')">
+        <img src="/images/hotel-3.jpg" alt="Hotel Interior">
+        <div class="photo-label">Relaxing Spaces</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-4.jpg')">
+        <img src="/images/hotel-4.jpg" alt="Hotel View">
+        <div class="photo-label">Guest Comfort</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-pool.jpg')">
+        <img src="/images/hotel-pool.jpg" alt="Pool">
+        <div class="photo-label">Swimming Pool</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-gym.jpg')">
+        <img src="/images/hotel-gym.jpg" alt="Fitness Center">
+        <div class="photo-label">Fitness Center</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-wifi.jpg')">
+        <img src="/images/hotel-wifi.jpg" alt="Wi-Fi">
+        <div class="photo-label">Free Wi-Fi</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-3.jpg')">
+        <img src="/images/hotel-3.jpg" alt="Hotel Interior">
+        <div class="photo-label">Relaxing Spaces</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-4.jpg')">
+        <img src="/images/hotel-4.jpg" alt="Hotel View">
+        <div class="photo-label">Guest Comfort</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gallery-section">
+  <h2 class="section-title">Property Views</h2>
+  <div class="scroll-wrapper">
+    <div class="scroll-track">
+      <div class="photo-card" onclick="openModal('/images/hotel-5.jpg')">
+        <img src="/images/hotel-5.jpg" alt="Property View">
+        <div class="photo-label">Modern Exterior</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel.jpg')">
+        <img src="/images/hotel.jpg" alt="Hotel Exterior">
+        <div class="photo-label">Hotel Entrance</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-1.jpg')">
+        <img src="/images/hotel-1.jpg" alt="Lobby Area">
+        <div class="photo-label">Refined Interiors</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-2.jpg')">
+        <img src="/images/hotel-2.jpg" alt="Hotel Space">
+        <div class="photo-label">Contemporary Design</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-5.jpg')">
+        <img src="/images/hotel-5.jpg" alt="Property View">
+        <div class="photo-label">Modern Exterior</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel.jpg')">
+        <img src="/images/hotel.jpg" alt="Hotel Exterior">
+        <div class="photo-label">Hotel Entrance</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-1.jpg')">
+        <img src="/images/hotel-1.jpg" alt="Lobby Area">
+        <div class="photo-label">Refined Interiors</div>
+      </div>
+      <div class="photo-card" onclick="openModal('/images/hotel-2.jpg')">
+        <img src="/images/hotel-2.jpg" alt="Hotel Space">
+        <div class="photo-label">Contemporary Design</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="photoModal" onclick="closeModal()">
+  <span class="modal-close">&times;</span>
+  <img id="modalImage" src="" alt="Expanded Hotel Photo">
+</div>
+
+<script>
+  function openModal(src) {
+    document.getElementById("photoModal").style.display = "flex";
+    document.getElementById("modalImage").src = src;
+  }
+
+  function closeModal() {
+    document.getElementById("photoModal").style.display = "none";
+  }
+</script>
+
+</body>
+</html>

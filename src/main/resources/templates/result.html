@@ -122,6 +122,14 @@
   <a href="/guest-map">View Floor Map</a>
   <a href="/recommend">Get Recommendation</a>
   <a href="/book-room">Book a Room</a>
+  <a href="/manage-booking">Manage Reservation</a>
+
+  <a th:if="${session.guestUserEmail != null}" href="/guest-dashboard">Guest Dashboard</a>
+  <a th:if="${session.guestUserEmail != null}" href="/guest-logout">Logout</a>
+
+  <a th:if="${session.guestUserEmail == null}" href="/guest-login">Guest Login</a>
+  <a th:if="${session.guestUserEmail == null}" href="/guest-signup">Guest Sign Up</a>
+
   <a href="/login">Admin Login</a>
 </div>
 

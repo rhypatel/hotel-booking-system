@@ -14,31 +14,54 @@
 
         .top-nav {
             background: #1f3c58;
-            padding: 15px;
+            padding: 15px 20px;
+            text-align: center;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
         }
 
         .top-nav a {
             display: inline-block;
-            margin: 0 10px;
             padding: 10px 14px;
             background: white;
             color: #1f3c58;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
+            transition: all 0.22s ease;
+            margin: 0;
         }
 
         .top-nav a:hover {
             background: #dfe6ec;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08);
         }
 
         .wrapper {
-            max-width: 700px;
+            max-width: 760px;
             margin: 50px auto;
             background: white;
-            padding: 35px;
-            border-radius: 14px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            padding: 38px;
+            border-radius: 16px;
+            box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+        }
+
+        .success-badge {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 18px auto;
+            border-radius: 50%;
+            background: #d4efdf;
+            color: #1e8449;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            font-weight: bold;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.06);
         }
 
         h1 {
@@ -49,13 +72,33 @@
         .success-message {
             color: #1e8449;
             font-weight: bold;
-            margin-bottom: 25px;
+            margin-bottom: 18px;
             font-size: 18px;
+        }
+
+        .subtext {
+            color: #666;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        .booking-id-box {
+            display: inline-block;
+            background: #f4f8fb;
+            color: #1f3c58;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .details {
             text-align: left;
             margin-top: 20px;
+            background: #f9fbfc;
+            padding: 22px;
+            border-radius: 12px;
         }
 
         .details p {
@@ -65,27 +108,33 @@
 
         .status-badge {
             display: inline-block;
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 20px;
             background: #fcf3cf;
             color: #b7950b;
             font-weight: bold;
         }
 
+        .action-links {
+            margin-top: 28px;
+        }
+
         .button-link {
             display: inline-block;
-            margin-top: 25px;
-            margin-right: 10px;
-            padding: 10px 15px;
+            margin: 8px;
+            padding: 10px 16px;
             background: #3498db;
             color: white;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
+            transition: all 0.22s ease;
         }
 
         .button-link:hover {
             background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 18px rgba(0,0,0,0.12);
         }
     </style>
 </head>
@@ -93,26 +142,60 @@
 
 <div class="top-nav">
     <a href="/browse">Browse Rooms</a>
+    <a href="/photos">Photos</a>
     <a href="/guest-map">View Floor Map</a>
     <a href="/recommend">Get Recommendation</a>
     <a href="/book-room">Book a Room</a>
+    <a href="/manage-booking">Manage Reservation</a>
+
+    <a th:if="${session.guestUserEmail != null}" href="/guest-dashboard">Guest Dashboard</a>
+    <a th:if="${session.guestUserEmail != null}" href="/guest-logout">Logout</a>
+
+    <a th:if="${session.guestUserEmail == null}" href="/guest-login">Guest Login</a>
+    <a th:if="${session.guestUserEmail == null}" href="/guest-signup">Guest Sign Up</a>
+
     <a href="/login">Admin Login</a>
 </div>
 
 <div class="wrapper">
+    <div class="success-badge">✓</div>
+
     <h1>Booking Request Submitted</h1>
-    <p class="success-message">Your booking request has been submitted successfully.</p>
+
+    <p class="success-message">
+        Your booking request has been submitted successfully.
+    </p>
+
+    <p class="subtext">
+        A confirmation email has been sent, and your payment method has been securely recorded for your reservation.
+    </p>
+
+    <p class="subtext">
+        Please save your booking ID so you can manage your reservation later.
+    </p>
+
+    <div class="booking-id-box">
+        Booking ID: <span th:text="${booking.id}"></span>
+    </div>
 
     <div class="details">
         <p><strong>Guest Name:</strong> <span th:text="${booking.guestName}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${booking.email}"></span></p>
+        <p><strong>Cardholder Name:</strong> <span th:text="${booking.cardholderName}"></span></p>
+        <p><strong>Payment Method:</strong> Card ending in <span th:text="${booking.cardLastFour}"></span></p>
+        <p><strong>Payment Status:</strong> <span th:text="${booking.paymentStatus}"></span></p>
         <p><strong>Room Number:</strong> <span th:text="${booking.roomNumber}"></span></p>
         <p><strong>Check-In Date:</strong> <span th:text="${booking.checkInDate}"></span></p>
         <p><strong>Check-Out Date:</strong> <span th:text="${booking.checkOutDate}"></span></p>
         <p><strong>Status:</strong> <span class="status-badge" th:text="${booking.status}"></span></p>
     </div>
 
-    <a href="/browse" class="button-link">Back to Browse</a>
-    <a href="/book-room" class="button-link">Make Another Booking</a>
+    <div class="action-links">
+        <a th:if="${session.guestUserEmail != null}" href="/guest-dashboard" class="button-link">Go to Guest Dashboard</a>
+        <a href="/manage-booking" class="button-link">Manage Reservation</a>
+        <a href="/browse" class="button-link">Back to Browse</a>
+        <a href="/book-room" class="button-link">Make Another Booking</a>
+    </div>
 </div>
 
 </body>

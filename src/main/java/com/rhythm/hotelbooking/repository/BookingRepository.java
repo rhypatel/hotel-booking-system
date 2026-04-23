@@ -10,4 +10,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByRoomNumberAndStatusIn(String roomNumber, List<String> statuses);
 
     List<Booking> findByRoomNumberOrderByCheckInDateAsc(String roomNumber);
+
+    List<Booking> findByEmailOrderByIdDesc(String email);
 }

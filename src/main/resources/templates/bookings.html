@@ -24,12 +24,15 @@
       background: white;
       color: #1f3c58;
       text-decoration: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: bold;
+      transition: all 0.22s ease;
     }
 
     .top-nav a:hover {
       background: #dfe6ec;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
     }
 
     .hero {
@@ -46,13 +49,33 @@
       margin-top: 0;
     }
 
+    .alert-success,
+    .alert-error {
+      max-width: 1400px;
+      margin: 0 auto 20px auto;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-weight: bold;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+    }
+
+    .alert-success {
+      background: #d4efdf;
+      color: #1e8449;
+    }
+
+    .alert-error {
+      background: #fadbd8;
+      color: #c0392b;
+    }
+
     .filter-box {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto 25px auto;
       background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.06);
       text-align: center;
     }
 
@@ -67,21 +90,40 @@
 
     input, select {
       margin-right: 15px;
+      margin-top: 8px;
+      margin-bottom: 8px;
       padding: 10px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      transition: all 0.2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52,152,219,0.15);
     }
 
     .filter-btn,
     .approve-btn,
     .reject-btn,
     .complete-btn {
-      padding: 8px 12px;
+      padding: 9px 13px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       color: white;
       cursor: pointer;
       font-weight: bold;
+      transition: all 0.22s ease;
+    }
+
+    .filter-btn:hover,
+    .approve-btn:hover,
+    .reject-btn:hover,
+    .complete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.12);
     }
 
     .filter-btn {
@@ -117,12 +159,12 @@
     }
 
     .table-box {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto 40px auto;
       background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.06);
       overflow-x: auto;
     }
 
@@ -136,11 +178,25 @@
       border: 1px solid #ddd;
       padding: 12px;
       text-align: center;
+      vertical-align: middle;
     }
 
     th {
       background: #1f3c58;
       color: white;
+    }
+
+    tbody tr {
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: #f4f8fb;
+    }
+
+    .no-actions {
+      color: #777;
+      font-weight: bold;
     }
 
     .empty-message {
@@ -169,11 +225,11 @@
   <p>Review, approve, reject, and complete hotel booking requests.</p>
 </div>
 
-<div th:if="${param.success}" style="max-width:1200px; margin:0 auto 20px auto; padding:12px 16px; background:#d4efdf; color:#1e8449; border-radius:8px; font-weight:bold;">
+<div th:if="${param.success}" class="alert-success">
   <span th:text="${param.success}"></span>
 </div>
 
-<div th:if="${param.error}" style="max-width:1200px; margin:0 auto 20px auto; padding:12px 16px; background:#fadbd8; color:#c0392b; border-radius:8px; font-weight:bold;">
+<div th:if="${param.error}" class="alert-error">
   <span th:text="${param.error}"></span>
 </div>
 
@@ -191,8 +247,10 @@
       <option value="ALL" th:selected="${selectedStatus == 'ALL'}">All</option>
       <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
       <option value="CONFIRMED" th:selected="${selectedStatus == 'CONFIRMED'}">Confirmed</option>
+      <option value="CHECKED_IN" th:selected="${selectedStatus == 'CHECKED_IN'}">Checked In</option>
       <option value="COMPLETED" th:selected="${selectedStatus == 'COMPLETED'}">Completed</option>
       <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
+      <option value="CANCELLED" th:selected="${selectedStatus == 'CANCELLED'}">Cancelled</option>
     </select>
 
     <button type="submit" class="filter-btn">Apply Filters</button>
@@ -206,21 +264,29 @@
     <tr>
       <th>ID</th>
       <th>Guest Name</th>
+      <th>Email</th>
       <th>Room Number</th>
       <th>Check-In</th>
       <th>Check-Out</th>
+      <th>Cardholder</th>
+      <th>Card Ending</th>
+      <th>Payment Status</th>
       <th>Status</th>
       <th>Actions</th>
     </tr>
     </thead>
-    <tbody>
 
+    <tbody>
     <tr th:each="booking : ${bookings}">
       <td th:text="${booking.id}"></td>
       <td th:text="${booking.guestName}"></td>
+      <td th:text="${booking.email}"></td>
       <td th:text="${booking.roomNumber}"></td>
       <td th:text="${booking.checkInDate}"></td>
       <td th:text="${booking.checkOutDate}"></td>
+      <td th:text="${booking.cardholderName}"></td>
+      <td th:text="${booking.cardLastFour}"></td>
+      <td th:text="${booking.paymentStatus}"></td>
       <td th:text="${booking.status}"></td>
 
       <td>
@@ -236,18 +302,18 @@
           <button type="submit" class="reject-btn">Reject</button>
         </form>
 
-        <form th:if="${booking.status == 'CONFIRMED'}"
+        <form th:if="${booking.status == 'CONFIRMED' or booking.status == 'CHECKED_IN'}"
               th:action="@{/bookings/complete/{id}(id=${booking.id})}"
               method="post" style="display:inline;">
           <button type="submit" class="complete-btn">Complete Stay</button>
         </form>
 
-        <span th:if="${booking.status == 'REJECTED' or booking.status == 'COMPLETED'}">
+        <span th:if="${booking.status == 'REJECTED' or booking.status == 'COMPLETED' or booking.status == 'CANCELLED'}"
+              class="no-actions">
           No actions
         </span>
       </td>
     </tr>
-
     </tbody>
   </table>
 </div>

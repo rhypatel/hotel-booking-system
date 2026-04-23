@@ -1,25 +1,31 @@
 package com.rhythm.hotelbooking.controller;
 
 import com.rhythm.hotelbooking.model.Booking;
+import com.rhythm.hotelbooking.model.GuestUser;
+import com.rhythm.hotelbooking.model.Room;
 import com.rhythm.hotelbooking.repository.BookingRepository;
+import com.rhythm.hotelbooking.repository.GuestUserRepository;
+import com.rhythm.hotelbooking.repository.RoomRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.rhythm.hotelbooking.model.Room;
-import com.rhythm.hotelbooking.repository.RoomRepository;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Controller
 public class BookingController {
 
     private final BookingRepository bookingRepository;
     private final RoomRepository roomRepository;
+    private final GuestUserRepository guestUserRepository;
 
-    public BookingController(BookingRepository bookingRepository, RoomRepository roomRepository) {
+    public BookingController(BookingRepository bookingRepository,
+                             RoomRepository roomRepository,
+                             GuestUserRepository guestUserRepository) {
         this.bookingRepository = bookingRepository;
         this.roomRepository = roomRepository;
+        this.guestUserRepository = guestUserRepository;
     }
 
     @GetMapping("/book-room")
@@ -45,6 +51,10 @@ public class BookingController {
 
     @PostMapping("/book-room")
     public String submitBooking(@ModelAttribute Booking booking,
+                                @RequestParam(required = false) String cardholderName,
+                                @RequestParam(required = false) String cardNumber,
+                                @RequestParam(required = false) String expiryDate,
+                                @RequestParam(required = false) String cvv,
                                 Model model) {
 
         var availableRooms = roomRepository.findAllByOrderByFloorAscRoomNumberAsc()
@@ -79,6 +89,13 @@ public class BookingController {
             return "book-room";
         }
 
+        if (booking.getCheckInDate().isBefore(LocalDate.now())) {
+            model.addAttribute("booking", booking);
+            model.addAttribute("rooms", availableRooms);
+            model.addAttribute("error", "Check-in date cannot be in the past.");
+            return "book-room";
+        }
+
         if (!booking.getCheckInDate().isBefore(booking.getCheckOutDate())) {
             model.addAttribute("booking", booking);
             model.addAttribute("rooms", availableRooms);
@@ -88,7 +105,7 @@ public class BookingController {
 
         var existingBookings = bookingRepository.findByRoomNumberAndStatusIn(
                 booking.getRoomNumber(),
-                java.util.List.of("PENDING", "CONFIRMED")
+                java.util.List.of("PENDING", "CONFIRMED", "CHECKED_IN")
         );
 
         boolean conflictExists = existingBookings.stream().anyMatch(existing ->
@@ -103,7 +120,59 @@ public class BookingController {
             return "book-room";
         }
 
+        boolean paymentStarted =
+                (cardholderName != null && !cardholderName.isBlank()) ||
+                        (cardNumber != null && !cardNumber.isBlank()) ||
+                        (expiryDate != null && !expiryDate.isBlank()) ||
+                        (cvv != null && !cvv.isBlank());
+
+        if (paymentStarted) {
+            if (cardholderName == null || cardholderName.isBlank()
+                    || cardNumber == null || cardNumber.isBlank()
+                    || expiryDate == null || expiryDate.isBlank()
+                    || cvv == null || cvv.isBlank()) {
+
+                model.addAttribute("booking", booking);
+                model.addAttribute("rooms", availableRooms);
+                model.addAttribute("error", "Payment is optional, but if you enter payment information, please complete all payment fields.");
+                return "book-room";
+            }
+
+            String digitsOnly = cardNumber.replaceAll("\\D", "");
+
+            if (!digitsOnly.matches("\\d{16}")) {
+                model.addAttribute("booking", booking);
+                model.addAttribute("rooms", availableRooms);
+                model.addAttribute("error", "Card number must contain exactly 16 digits.");
+                return "book-room";
+            }
+
+            if (!expiryDate.matches("^(0[1-9]|1[0-2])/[0-9]{2}$")) {
+                model.addAttribute("booking", booking);
+                model.addAttribute("rooms", availableRooms);
+                model.addAttribute("error", "Expiration date must be in MM/YY format.");
+                return "book-room";
+            }
+
+            if (!cvv.matches("\\d{3,4}")) {
+                model.addAttribute("booking", booking);
+                model.addAttribute("rooms", availableRooms);
+                model.addAttribute("error", "CVV must be 3 or 4 digits.");
+                return "book-room";
+            }
+
+            booking.setCardholderName(cardholderName);
+            booking.setCardLastFour(digitsOnly.substring(12));
+            booking.setPaymentStatus("PAYMENT_METHOD_RECORDED");
+
+        } else {
+            booking.setCardholderName("Not provided");
+            booking.setCardLastFour("N/A");
+            booking.setPaymentStatus("PAYMENT_PENDING_AT_CHECK_IN");
+        }
+
         booking.setStatus("PENDING");
+
         Booking savedBooking = bookingRepository.save(booking);
 
         return "redirect:/booking-confirmation/" + savedBooking.getId();
@@ -164,18 +233,6 @@ public class BookingController {
 
         Booking booking = bookingRepository.findById(id).orElseThrow();
         booking.setStatus("CONFIRMED");
-
-        Room room = roomRepository.findAll()
-                .stream()
-                .filter(r -> r.getRoomNumber().equals(booking.getRoomNumber()))
-                .findFirst()
-                .orElse(null);
-
-        if (room != null) {
-            room.setStatus("OCCUPIED");
-            roomRepository.save(room);
-        }
-
         bookingRepository.save(booking);
 
         return "redirect:/bookings?success=Booking approved successfully";
@@ -206,6 +263,10 @@ public class BookingController {
 
         Booking booking = bookingRepository.findById(id).orElseThrow();
 
+        if ("COMPLETED".equalsIgnoreCase(booking.getStatus())) {
+            return "redirect:/bookings?error=This stay has already been completed";
+        }
+
         booking.setStatus("COMPLETED");
 
         Room room = roomRepository.findAll()
@@ -219,9 +280,18 @@ public class BookingController {
             roomRepository.save(room);
         }
 
+        if (booking.getEmail() != null && !booking.getEmail().isBlank()) {
+            GuestUser guestUser = guestUserRepository.findByEmail(booking.getEmail());
+
+            if (guestUser != null) {
+                guestUser.setLoyaltyPoints(guestUser.getLoyaltyPoints() + 100);
+                guestUserRepository.save(guestUser);
+            }
+        }
+
         bookingRepository.save(booking);
 
-        return "redirect:/bookings?success=Stay completed successfully";
+        return "redirect:/bookings?success=Stay completed successfully and loyalty points awarded";
     }
 
     @GetMapping("/booking-confirmation/{id}")
@@ -232,5 +302,4 @@ public class BookingController {
 
         return "booking-confirmation";
     }
-
 }

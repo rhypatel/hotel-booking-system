@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Guest Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #eef3f7, #f8fafc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #2c3e50;
+    }
+
+    .login-box {
+      background: white;
+      padding: 35px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      width: 380px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      color: #1f3c58;
+    }
+
+    p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #1f3c58;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 12px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #163147;
+    }
+
+    .success {
+      color: #1e8449;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #c0392b;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      text-decoration: none;
+      color: #1f3c58;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <h2>Guest Login</h2>
+  <p>Log in to view and manage your stay.</p>
+
+  <form th:action="@{/guest-login}" method="post">
+    <input type="email" name="email" placeholder="Email Address" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Log In</button>
+  </form>
+
+  <div class="success" th:if="${param.signupSuccess}">
+    Account created successfully. Please log in.
+  </div>
+
+  <div class="error" th:if="${param.error}">
+    Invalid email or password.
+  </div>
+
+  <a href="/guest-signup" class="back-link">Need an account? Sign up</a>
+  <a href="/browse" class="back-link">Back to Guest Site</a>
+</div>
+
+</body>
+</html>

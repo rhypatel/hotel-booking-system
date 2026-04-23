@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>My Stay</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .top-nav {
+      background: #1f3c58;
+      padding: 15px 20px;
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      padding: 10px 14px;
+      background: white;
+      color: #1f3c58;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: all 0.22s ease;
+      margin: 0;
+    }
+
+    .top-nav a:hover {
+      background: #dfe6ec;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    .wrapper {
+      max-width: 760px;
+      margin: 50px auto;
+      background: white;
+      padding: 36px;
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+    }
+
+    h1 {
+      color: #1f3c58;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .booking-id-box {
+      display: inline-block;
+      background: #f4f8fb;
+      color: #1f3c58;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: bold;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .details {
+      text-align: left;
+      margin-top: 10px;
+      background: #f9fbfc;
+      padding: 24px;
+      border-radius: 12px;
+    }
+
+    .details p {
+      font-size: 16px;
+      margin: 12px 0;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .status-pending {
+      background: #f39c12;
+    }
+
+    .status-confirmed {
+      background: #27ae60;
+    }
+
+    .status-checkedin {
+      background: #3498db;
+    }
+
+    .status-completed {
+      background: #34495e;
+    }
+
+    .status-cancelled,
+    .status-rejected {
+      background: #e74c3c;
+    }
+
+    .alert-success {
+      background: #d4efdf;
+      color: #1e8449;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      font-weight: bold;
+    }
+
+    .alert-error {
+      background: #fadbd8;
+      color: #c0392b;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      font-weight: bold;
+    }
+
+    .actions {
+      margin-top: 26px;
+    }
+
+    .actions form,
+    .quick-links a {
+      display: inline-block;
+      margin: 8px;
+    }
+
+    button,
+    .button-link {
+      padding: 10px 16px;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.22s ease;
+    }
+
+    button:hover,
+    .button-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.12);
+    }
+
+    .cancel-btn {
+      background: #e74c3c;
+    }
+
+    .cancel-btn:hover {
+      background: #c0392b;
+    }
+
+    .checkin-btn {
+      background: #27ae60;
+    }
+
+    .checkin-btn:hover {
+      background: #1e8449;
+    }
+
+    .checkout-btn {
+      background: #34495e;
+    }
+
+    .checkout-btn:hover {
+      background: #2c3e50;
+    }
+
+    .button-link {
+      background: #3498db;
+    }
+
+    .button-link:hover {
+      background: #2980b9;
+    }
+
+    .quick-links {
+      margin-top: 22px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="top-nav">
+  <a href="/browse">Browse Rooms</a>
+  <a href="/photos">Photos</a>
+  <a href="/guest-map">View Floor Map</a>
+  <a href="/recommend">Get Recommendation</a>
+  <a href="/book-room">Book a Room</a>
+  <a href="/manage-booking">Manage Reservation</a>
+
+  <a th:if="${session.guestUserEmail != null}" href="/guest-dashboard">Guest Dashboard</a>
+  <a th:if="${session.guestUserEmail != null}" href="/guest-logout">Logout</a>
+
+  <a th:if="${session.guestUserEmail == null}" href="/guest-login">Guest Login</a>
+  <a th:if="${session.guestUserEmail == null}" href="/guest-signup">Guest Sign Up</a>
+
+  <a href="/login">Admin Login</a>
+</div>
+
+<div class="wrapper">
+
+  <h1>My Stay</h1>
+
+  <p class="subtitle">
+    View and manage your current reservation details below.
+  </p>
+
+  <div class="booking-id-box">
+    Booking ID: <span th:text="${booking.id}"></span>
+  </div>
+
+  <div th:if="${success}" class="alert-success">
+    <span th:text="${success}"></span>
+  </div>
+
+  <div th:if="${error}" class="alert-error">
+    <span th:text="${error}"></span>
+  </div>
+
+  <div class="details">
+    <p><strong>Guest Name:</strong> <span th:text="${booking.guestName}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${booking.email}"></span></p>
+    <p><strong>Cardholder Name:</strong> <span th:text="${booking.cardholderName}"></span></p>
+    <p><strong>Payment Method:</strong> Card ending in <span th:text="${booking.cardLastFour}"></span></p>
+    <p><strong>Payment Status:</strong> <span th:text="${booking.paymentStatus}"></span></p>
+    <p><strong>Room Number:</strong> <span th:text="${booking.roomNumber}"></span></p>
+    <p><strong>Room Location:</strong> Use the floor map to help locate your room.</p>
+    <p><strong>Check-In Date:</strong> <span th:text="${booking.checkInDate}"></span></p>
+    <p><strong>Check-Out Date:</strong> <span th:text="${booking.checkOutDate}"></span></p>
+
+    <p>
+      <strong>Status:</strong>
+
+      <span th:if="${booking.status == 'PENDING'}"
+            class="status-badge status-pending">PENDING</span>
+
+      <span th:if="${booking.status == 'CONFIRMED'}"
+            class="status-badge status-confirmed">CONFIRMED</span>
+
+      <span th:if="${booking.status == 'CHECKED_IN'}"
+            class="status-badge status-checkedin">CHECKED IN</span>
+
+      <span th:if="${booking.status == 'COMPLETED'}"
+            class="status-badge status-completed">COMPLETED</span>
+
+      <span th:if="${booking.status == 'CANCELLED'}"
+            class="status-badge status-cancelled">CANCELLED</span>
+
+      <span th:if="${booking.status == 'REJECTED'}"
+            class="status-badge status-rejected">REJECTED</span>
+    </p>
+  </div>
+
+  <div class="actions">
+
+    <form th:if="${booking.status == 'PENDING' or booking.status == 'CONFIRMED'}"
+          th:action="@{/manage-booking/cancel/{id}(id=${booking.id})}"
+          method="post">
+      <button type="submit" class="cancel-btn">Cancel Reservation</button>
+    </form>
+
+    <form th:if="${booking.status == 'CONFIRMED'}"
+          th:action="@{/manage-booking/check-in/{id}(id=${booking.id})}"
+          method="post">
+      <button type="submit" class="checkin-btn">Check In</button>
+    </form>
+
+    <form th:if="${booking.status == 'CHECKED_IN'}"
+          th:action="@{/manage-booking/check-out/{id}(id=${booking.id})}"
+          method="post">
+      <button type="submit" class="checkout-btn">Check Out</button>
+    </form>
+
+  </div>
+
+  <div class="quick-links">
+    <a th:if="${session.guestUserEmail != null}" href="/guest-dashboard" class="button-link">Back to Guest Dashboard</a>
+    <a href="/guest-map" class="button-link">View Floor Map</a>
+    <a href="/browse" class="button-link">Browse More Rooms</a>
+    <a href="/manage-booking" class="button-link">Search Another Reservation</a>
+  </div>
+
+</div>
+
+</body>
+</html>

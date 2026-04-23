@@ -24,12 +24,15 @@
       background: white;
       color: #1f3c58;
       text-decoration: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: bold;
+      transition: all 0.22s ease;
     }
 
     .top-nav a:hover {
       background: #dfe6ec;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
     }
 
     .hero {
@@ -47,33 +50,55 @@
     }
 
     .content-box {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto 30px auto;
       padding: 0 20px;
     }
 
     .card {
       background: white;
-      padding: 28px;
-      border-radius: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.06);
       margin-bottom: 30px;
     }
 
     .card p {
-      margin: 10px 0;
+      margin: 12px 0;
       font-size: 16px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 7px 13px;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .status-available {
+      background: #27ae60;
+    }
+
+    .status-occupied {
+      background: #e74c3c;
+    }
+
+    .status-cleaning {
+      background: #f39c12;
     }
 
     h2 {
       margin-bottom: 18px;
+      color: #1f3c58;
     }
 
     .table-box {
       background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.06);
       overflow-x: auto;
     }
 
@@ -87,11 +112,20 @@
       border: 1px solid #ddd;
       padding: 12px;
       text-align: center;
+      vertical-align: middle;
     }
 
     th {
       background: #1f3c58;
       color: white;
+    }
+
+    tbody tr {
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: #f4f8fb;
     }
 
     .empty-message {
@@ -106,10 +140,12 @@
       text-decoration: none;
       font-weight: bold;
       color: #1f3c58;
+      transition: all 0.2s ease;
     }
 
     .back-link:hover {
       text-decoration: underline;
+      transform: translateY(-1px);
     }
   </style>
 </head>
@@ -138,11 +174,17 @@
     <p><strong>Floor:</strong> <span th:text="${room.floor}"></span></p>
     <p><strong>Type:</strong> <span th:text="${room.type}"></span></p>
     <p><strong>Price:</strong> $<span th:text="${room.pricePerNight}"></span></p>
-    <p><strong>Status:</strong> <span th:text="${room.status}"></span></p>
+
+    <p>
+      <strong>Status:</strong>
+
+      <span th:if="${room.status == 'AVAILABLE'}" class="status-badge status-available">AVAILABLE</span>
+      <span th:if="${room.status == 'OCCUPIED'}" class="status-badge status-occupied">OCCUPIED</span>
+      <span th:if="${room.status == 'CLEANING'}" class="status-badge status-cleaning">CLEANING</span>
+    </p>
+
     <p><strong>Side:</strong> <span th:text="${room.side}"></span></p>
     <p><strong>Position:</strong> <span th:text="${room.position}"></span></p>
-    <p><strong>X Coordinate:</strong> <span th:text="${room.x}"></span></p>
-    <p><strong>Y Coordinate:</strong> <span th:text="${room.y}"></span></p>
   </div>
 
   <h2>Booking History</h2>
@@ -153,8 +195,12 @@
       <tr>
         <th>ID</th>
         <th>Guest Name</th>
+        <th>Email</th>
         <th>Check-In Date</th>
         <th>Check-Out Date</th>
+        <th>Cardholder</th>
+        <th>Card Ending</th>
+        <th>Payment Status</th>
         <th>Status</th>
       </tr>
       </thead>
@@ -162,8 +208,12 @@
       <tr th:each="booking : ${bookings}">
         <td th:text="${booking.id}"></td>
         <td th:text="${booking.guestName}"></td>
+        <td th:text="${booking.email}"></td>
         <td th:text="${booking.checkInDate}"></td>
         <td th:text="${booking.checkOutDate}"></td>
+        <td th:text="${booking.cardholderName}"></td>
+        <td th:text="${booking.cardLastFour}"></td>
+        <td th:text="${booking.paymentStatus}"></td>
         <td th:text="${booking.status}"></td>
       </tr>
       </tbody>
